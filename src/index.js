@@ -12,7 +12,6 @@ async function preload (items, cb) {
         Promise.all(actions)
           .then(res => {
 			if (cb) cb()
-
             resolve(res)
           })
           .catch(err => console.log(err))
@@ -28,7 +27,7 @@ function getActions (items) {
 		const type = item.type || getType(url)
 
 		if (url && load[type]) {
-			actions.push(load[type]([ url, item.cb ]))
+			actions.push(load[type](url, item.cb))
 		}
     }
 
@@ -46,10 +45,8 @@ async function loadImage (url, cb) {
 	return new Promise(resolve => {
         const img = new Image()
 
-        img.onload = (res) => {
-			if (cb) cb()
-			resolve(url)
-        }
+        img.onload = res => { next(resolve, url, cb) }
+        img.onerror = err => { next(resolve, false, cb) }
         img.src = url
 	})
 }
@@ -58,10 +55,13 @@ async function loadSound (url, cb) {
 	return new Promise(resolve => {
         const audio = new Audio()
 
-        audio.addEventListener('canplaythrough', () => {
-			if (cb) cb()
-			resolve(url)
-        }, false)
+        audio.addEventListener('canplaythrough', () => { next(resolve, url, cb) }, false)
+        audio.addEventListener('error', () => { next(resolve, false, cb) }, false)
         audio.src = url
 	})
+}
+
+function next (resolve, param, cb) {
+	if (cb) cb()
+	resolve(param)
 }
