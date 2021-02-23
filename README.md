@@ -3,7 +3,7 @@
 ## Simple Mode
 
 ```js
-const { preload } = require('@kznjunk/preload')
+const { preload } = require('@kznjunk/pre-load')
 const itemsToPreload = [
   'img/hello.png',
   'snd/there.mp3',
@@ -17,7 +17,7 @@ const preloadedItemsWithCb = preload(itemsToPreload, () => { console.log('Genera
 ## Advanced Mode
 
 ```js
-const { preload } = require('@kznjunk/preload')
+const { preload } = require('@kznjunk/pre-load')
 const itemsToPreload = [
   {
   	type: 'img' // extensions might not be detectable
@@ -38,7 +38,7 @@ You can define one generic cb when all files are ready, or one cb per file.
 An example of usage could be to update a progress bar like:
 
 ```js
-const { preload } = require('@kznjunk/preload')
+const { preload } = require('@kznjunk/pre-load')
 
 const imgsToPreload = [
   'img/1.png',
