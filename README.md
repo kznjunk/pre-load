@@ -1,60 +1,56 @@
 # Pre-load
 
-## Simple Mode
+## Quick Mode
 
 ```js
 const { preload } = require('@kznjunk/pre-load')
+
 const itemsToPreload = [
   'img/hello.png',
   'snd/there.mp3',
-  'snd/404.mp3'
+  'snd/i-dont-exist.mp3'
 ]
 
 const preloadedItems = await preload(itemsToPreload) // result: [ 'img/hello.png', 'snd/there.mp3', false ]
-const preloadedItemsWithCb = preload(itemsToPreload, () => { console.log('General Kenobi') })
 ```
 
-## Advanced Mode
+## No extension case
 
 ```js
 const { preload } = require('@kznjunk/pre-load')
+
 const itemsToPreload = [
-  {
-  	type: 'img' // extensions might not be detectable
-  	url: 'img/hello?size=42x42', // so you can specify the type
-  	cb
-  },
-  {
-  	type: 'snd'
-  	url: 'snd/there.mp3',
-  	cb
-  }
+  'img/hello?size=42x42',
+  'img/there?size=108x108'
 ]
 
-const preloadedItems = await preload(itemsToPreload)
+const options = {
+  type: 'img'
+}
+
+const preloadedItems = await preload(itemsToPreload, options) // result: [ 'img/hello?size=42x42', 'img/there?size=108x108' ]
 ```
 
-You can define one generic cb when all files are ready, or one cb per file. 
-An example of usage could be to update a progress bar like:
+## Callbacks & progress bar
 
 ```js
 const { preload } = require('@kznjunk/pre-load')
 
-const imgsToPreload = [
-  'img/1.png',
-  'img/2.png',
-  'img/3.png'
+const itemsToPreload = [
+  'img/hello.png',
+  'snd/there.mp3'
 ]
 
-const sndsToPreload = [
-  'snd/1.png',
-  'snd/2.png',
-  'snd/3.png'
-]
+const options = {
+  cb_foreach: () => { console.log('Another one') },
+  cb_then: () => { console.log('Annnnd it\'s done.') },
+}
 
-await Promise.all([
-  this.preload(imgsToPreload, () => { console.log('All images are preloaded') }),
-  this.preload(sndsToPreload, () => { console.log('All sounds are preloaded') })
-])
+const preloadedItems = await preload(itemsToPreload, options) // result: [ 'img/hello.png', 'snd/there.mp3' ]
+```
 
+## Real use case (todo..)
+
+```js
+console.log('nothing to see here')
 ```

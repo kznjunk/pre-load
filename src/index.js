@@ -5,12 +5,14 @@ const load = {
 
 module.exports = { preload }
 
-async function preload (items, cb) {
+async function preload (items, options) {
 	return new Promise(resolve => {
-        const actions = items && items.length && getActions(items)
+        const actions = items && items.length && getActions(items, options)
 
         Promise.all(actions)
           .then(res => {
+          	const cb = options && options.cb_then
+
 			if (cb) cb()
             resolve(res)
           })
@@ -18,16 +20,16 @@ async function preload (items, cb) {
 	})
 }
 
-function getActions (items) {
+function getActions (items, options) {
 	const actions = [ ]
+	const cb = options && options.cb_foreach
 
     for (let i = 0; i < items.length; i++) {
-		const item = items[i]
-		const url = item.url || item
-		const type = item.type || getType(url)
+		const url = items[i]
+		const type = (options && options.type) || getType(url)
 
 		if (url && load[type]) {
-			actions.push(load[type](url, item.cb))
+			actions.push(load[type](url, cb))
 		}
     }
 
